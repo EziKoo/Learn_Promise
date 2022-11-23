@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>测试Promise</title>
+</head>
+<body>
+  <script>
+    // const p = new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     //箭头函数体
+    //     resolve('ok')
+    //   }, 1000)
+    // })
+    //
+    // p.then(
+    //   value => {
+    //     console.log(value);
+    //   },
+    //   reason => {
+    //     console.log(reason);
+    //   }
+    // )
+    //
+    // console.log("111");
+
+
+    const p = new Promise((resolve, reject) => {
+      //函数体
+      reject(-100)
+    })
+
+    const test_resolve = Promise.resolve(p)
+    const test_reject = Promise.reject(p)
+
+
+    //感觉底层就是把p的结果给了test_resolve，然后相当于执行了p的回调
+    test_resolve.then(
+      value => {
+        console.log("成功了", value);
+      },
+      reason => {
+        console.log("失败了", reason);
+      }
+    )
+
+    //如果上面没写test_resolve的测试，这里还会报一个错误，但是写了就不会报错
+    test_reject.then(
+      value => {
+        console.log("成功了", value);
+      },
+      reason => {
+        console.log("失败了", reason);
+      }
+    )
+
+  </script>
+</body>
+</html>

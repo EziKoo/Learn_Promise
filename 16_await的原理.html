@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>await的原理</title>
+</head>
+<body>
+  <script>
+    /*
+      若我们使用 async配合await这种写法：
+          1、表面上不出现任何的回调函数
+          2、但实际上底层把我们写的代码进行了加工，把回调函数"还原"回来了
+          3、最终运行的代码依然是有回调的，只是程序员没有看见罢了
+     */
+
+    const p = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        //箭头函数体
+        resolve('a')
+      }, 1000)
+    })
+
+    async function fun() {
+      //函数体
+      console.log("11111");
+      console.log("22222");
+
+      //await的原理是以 await作为分割符，将await右边的所有代码全部放到then的成功回调函数体中
+      //然后将await左边的变量作为，成功回调函数的参数传进入了
+      //程序员"轻松"的写法
+      const result = await p
+      console.log(result);
+      console.log("33333");
+      console.log("44444");
+
+      //底层做的处理为：浏览器翻译后的代码，因为翻译的时候回调中只有成功的回调
+      //所有这也就是为什么await 只能得到promise成功后的结果值
+      // p.then(
+      //   result => {
+      //     console.log(result);
+      //     console.log("33333");
+      //     console.log("44444");
+      //   }
+      // )
+    }
+
+    fun()
+    console.log(1);
+  </script>
+</body>
+</html>

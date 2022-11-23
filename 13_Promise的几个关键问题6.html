@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Promise的几个关键问题6</title>
+</head>
+<body>
+  <script>
+
+    /*
+      Promise错误穿透：
+         (1)当使用promise的then链式调用时，可以在最后用catch指定一个失败的回调
+         (2)前面任何操作出了错误，都会传到最后失败的回调中处理
+      备注：如果不存在then的链式调用，就不需要考虑then的错误穿透
+     */
+
+    function sendAjax(url, data, index) {
+      return new Promise((resolve, reject) => {
+        //实例xhr
+        const xhr = new XMLHttpRequest()
+        //绑定监听
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              // console.log(xhr.response);
+              resolve(xhr.response)
+            } else {
+              // console.log("请求出了点问题");
+              reject(`第${index}次请求出了点问题`)
+            }
+          }
+        }
+        //整理参数
+        let str = ''
+        for (const key in data) {
+          str += `${key}=${data[key]}&`
+        }
+        str = str.slice(0, -1)
+
+        xhr.open("GET", url + '?' + str)
+        xhr.responseType = 'json'
+        xhr.send()
+      })
+    }
+
+    //发送第1次请求
+    sendAjax('https://api.apiopen.top/getJoke', {page: 1}, 1)
+      .then(
+        value => {
+          console.log("第1次的请求成功了", value);
+          //发送第2次请求
+          return sendAjax('https://api.apiopen.top/getJoke', {page: 1}, 2)
+        },
+        // reason => {
+        //   console.log(reason);
+        //   return new Promise(() => {
+        //   })
+        // }
+
+        //虽然这里程序员没写失败的回调，但是底层帮我们写了，
+        // 所以会往下面的链式一直找有没有失败的回调，如果都没有写失败的回调，
+        // 那么底层就一直帮我们写上了reason => {throw reason}，直到找到catch()
+        // reason => {throw reason}
+      )
+      .then(
+        value => {
+          console.log("第2次的请求成功了", value);
+          return sendAjax('https://api.apiopen.top/getJoke', {page: 1}, 3)
+        },
+        reason => {
+          console.log('哈哈哈哈', reason);
+          return new Promise(() => {
+          })
+        }
+      )
+      .then(
+        value => {
+          console.log("第3次的请求成功了", value);
+        },
+        // reason => {
+        //   console.log('呵呵呵',reason);
+        //   return new Promise(() => {
+        //   })
+        // }
+      )
+      .catch(
+        //在then链式请求的任何一次请求失败，先看当前then的下一个链条有没有失败的回调，
+        // 如果有，就直接走下一个链式then中的失败回调，下一个也没有，就一直往下找，直到找到一个为止。
+        // 如果往后的所有链式中都没有指定失败的回调
+        // 才会跳到catch回调函数这里，执行catch中的失败回调
+        reason => {
+          console.log(reason);
+        }
+      )
+  </script>
+</body>
+</html>
