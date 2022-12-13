@@ -22,18 +22,25 @@
           onRejected：失败的回调函数 (reason) => {}
           说明：catch()方法是then方法的语法糖，相当于：then(undefined, onRejected)
 
-      4、Promise.resolve方法：Promise.resolve(value)
+      4、Promise.prototype.finally()方法：Promise实例.finally()
+          Promise.finally(()=>{})方法的回调函数中不接受任何参数
+          不管promise最后的状态是什么，在执行完then或catch指定的回调函数后，都会执行finally方法指定的回调函数，与Promise实例的状态无关
+          在项目中常遇到一些加载效果的功能，一般请求前页面显示加载效果，请求完后取消页面的加载效果，
+          我一开始将标识放在then里面去处理，当请求成功后就取消loading效果
+          后面发现如果请求出错的情况下，页面一直加载没有办法取消，后面将标识放到finally中去处理，从而解决了问题。
+
+      5、Promise.resolve方法：Promise.resolve(value)
           说明：用于快速返回一个状态为fulfilled或rejected的Promise实例对象
           备注：value的值可能是：(1)非Promise值  (2)Promise值
 
-      5、Promise.reject方法：Promise.reject(reason)
+      6、Promise.reject方法：Promise.reject(reason)
           说明：用于快速返回一个状态（一定）为rejected的Promise实例对象
 
-      6、Promise.all方法：Promise.all(promiseArr)
+      7、Promise.all方法：Promise.all(promiseArr)
           promiseArr：包含n个Promise实例的数组
           说明：返回一个新的Promise实例，只有所有的promise都成功才成功，只要有一个失败就直接失败
 
-      7、Promise.race方法：Promise.race(promiseArr)
+      8、Promise.race方法：Promise.race(promiseArr)
           promiseArr：包含n个Promise实例的数组
           说明：返回一个新的Promise实例，成功还是失败？以最先出的结果的Promise为准
      */
@@ -79,6 +86,24 @@
     //     console.log("失败了2", reason);
     //   }
     // )
+
+    // Promise.prototype.finally()方法
+    // const p = new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     // resolve('200')
+    //     reject('404')
+    //   }, 2000)
+    // })
+
+    // p.then(
+    //   response => {console.log('请求成功了', response);},
+    // ).catch(
+    //   reason => {console.log('请求失败了', reason);}
+    // ).finally(
+    //   // 回调函数不需要传入参数
+    //   () => { console.log('无论请求成功还是失败了，我都会走到这里，执行这里的逻辑');}
+    // )
+    
 
     //Promise.resolve，直接快速返回一个状态为fulfilled的Promise实例对象
     // const p0 = Promise.resolve(4545)
