@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Promise的基本使用</title>
-</head>
-<body>
-  <script>
-    /*
+  <head>
+    <meta charset="UTF-8" />
+    <title>Promise的基本使用</title>
+  </head>
+  <body>
+    <script>
+      /*
       1、重要语法：
             new Promise(executor)构造函数
             Promise.prototype.then方法
@@ -34,56 +34,98 @@
             4、一个Promise指定多个成功/失败的回调函数，都会调用吗？
      */
 
-    const p = new Promise((resolve, reject) => {
-      console.log('1111');
-      // resolve(100)
-      // reject('error')
+      const p = new Promise((resolve, reject) => {
+        console.log("1111");
+        // resolve(100)
+        // reject('error')
+        // setTimeout(() => {
+        //   resolve('我是服务器返回的数据')
+        // }, 0)
+
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4) {
+            //readyState为4代表接收完毕，接收的可能是：服务器返回的成功数据、服务器返回的错误信息
+            if (xhr.status === 200) {
+              resolve(xhr.response);
+            } else {
+              reject("请求出错了");
+            }
+          }
+        };
+
+        xhr.open("GET", "https://api.apiopen.top/getJoke");
+        xhr.responseType = "json";
+        xhr.send();
+      });
+
+      p.then(
+        (value) => {
+          //成功的回调-异步
+          console.log("成功了1", value);
+        },
+        (reason) => {
+          //失败的回调-异步
+          console.log("失败了1", reason);
+        }
+      );
+
+      //也会执行
+      // p.then(
+      //   (value) => {    //成功的回调-异步
+      //     console.log('成功了2', value);
+      //   },
+      //   (reason) => {    //失败的回调-异步
+      //     console.log('失败了2', reason);
+      //   })
+
       // setTimeout(() => {
-      //   resolve('我是服务器返回的数据')
+      //   //箭头函数体
+      //   console.log("3333");
       // }, 0)
 
-      const xhr = new XMLHttpRequest()
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          //readyState为4代表接收完毕，接收的可能是：服务器返回的成功数据、服务器返回的错误信息
-          if (xhr.status === 200) {
-            resolve(xhr.response)
-          } else {
-            reject("请求出错了")
-          }
+      // console.log('2222');
+
+      /* codeWhy */
+      function foo() {
+        // Promise
+        return new Promise((resolve, reject) => {
+          // resolve();
+          reject()
+        });
+      }
+
+      const fooPromise = foo();
+      // then方法传入的回调函数，会在Promise执行resolve函数时，被回调
+      fooPromise.then(() => {
+
+      });
+
+      // catch方法传入的回调函数，会在Promise执行reject函数时，被回调
+      fooPromise.catch(() => {
+
+      })
+
+      class Person {
+        constructor(callback) {
+          this.foo = () => {};
+          this.bar = () => {};
+          callback(foo, bar);
         }
       }
 
-      xhr.open('GET', 'https://api.apiopen.top/getJoke')
-      xhr.responseType = 'json'
-      xhr.send()
+      const person = new Person((foo, bar) => {
+        foo();
+        bar();
+      });
 
-    })
-
-    p.then(
-      (value) => {    //成功的回调-异步
-        console.log('成功了1', value);
-      },
-      (reason) => {    //失败的回调-异步
-        console.log('失败了1', reason);
-      })
-
-
-    //也会执行
-    // p.then(
-    //   (value) => {    //成功的回调-异步
-    //     console.log('成功了2', value);
-    //   },
-    //   (reason) => {    //失败的回调-异步
-    //     console.log('失败了2', reason);
-    //   })
-
-    // setTimeout(() => {
-    //   //箭头函数体
-    //   console.log("3333");
-    // }, 0)
-
-    // console.log('2222');
-  </script>
-</body>
+      // 传入的这个函数，被称之为 executor函数，执行者函数
+      // resolve：回调函数，在成功时，回调resolve函数
+      // reject：回调函数，在失败时，回调reject函数
+      const promise = new Promise((resolve, reject) => {
+        // 这个函数会被立即执行
+        // console.log("promise传入的函数被执行了");
+      });
+    </script>
+  </body>
 </html>

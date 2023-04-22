@@ -1,43 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>对调函数的分类</title>
-</head>
-<body>
-  <script>
-    /*
-    前序知识：什么是回调函数？---->我们定义的，我们没有调用，最终执行了
-      1、同步的回调函数：
+  <head>
+    <meta charset="UTF-8" />
+    <title>对调函数的分类</title>
+  </head>
+  <body>
+    <script>
+      /* 
+    前序知识：什么是回调函数？---- 我们定义的，我们没有调用，最终执行了
+    1、同步的回调函数：
         理解：立即在主线程上执行，不会放入对调函数队列中
         例子：数组遍历相关的回调函数 /Promise的executor函数
-      2、异步的回调函数：
-        理解：不会立即执行，会放入到回调队列中以后执行
-        例子：定时器回调 / ajax回调 /promise的成功、失败回调
-     */
+    2、异步的回调函数：
+      理解：不会立即执行，会放入到回调队列中以后执行
+      例子：定时器回调 / ajax回调 /promise的成功、失败回调
+   */
 
-    // setTimeout(() => {
-    //   console.log("@");
-    // }, 0)
-    // console.log("#");
+      // setTimeout(() => {
+      //   console.log("@");
+      // }, 0)
+      // console.log("#");
 
-    //演示同步的对调函数
-    // let arr = [1,2,4,5,8]
-    // arr.forEach((item)=>{
-    //   //箭头函数体
-    //   console.log(item);
-    // })
-    //
-    // console.log("主线程的代码");
+      //演示同步的对调函数
+      // let arr = [1,2,4,5,8]
+      // arr.forEach((item)=>{
+      //   //箭头函数体
+      //   console.log(item);
+      // })
+      //
+      // console.log("主线程的代码");
 
-    //演示异步的回调函数
-    setTimeout(() => {
-      //箭头函数体
-      console.log("@");
-    }, 0)
+      //演示异步的回调函数
+      // setTimeout(() => {
+      //   //箭头函数体
+      //   console.log("@");
+      // }, 0)
 
-    console.log("主线程");
+      // console.log("主线程");
 
-  </script>
-</body>
+
+
+
+
+
+
+
+      /* codeWhy */
+      /* 
+        模拟一个请求，以前的方式是用回调函数，把请求的结果给到外面
+          这种回调的方式有很多的弊端：
+            1、如果是我们自己封装的requestData,那么我们在封装的时候必须要自己设计好callback名称，并且使用好。
+            2、如果我们使用的是别人封装的requestData或者一些第三方库，那么我们必须要去看别人的源码或者文档，才知道
+              这个函数需要怎么去获取到结果。
+      */
+
+      function requestData(url, successCallback, failCallback) {
+        setTimeout(() => {
+          // 拿到请求的结果
+          if (url === "chy") {
+            // url传入的是chy，请求成功
+            let names = ["ad", "fds", "eji"];
+            successCallback(names);
+          } else {
+            // 否则请求失败
+            let errMessage = "请求失败，url错误";
+            failCallback(errMessage);
+          }
+        }, 3000);
+      }
+
+      // main.js
+      requestData(
+        "chy",
+        (res) => {
+          console.log("成功的结果", res);
+        },
+        (error) => {
+          console.log("失败的结果", error);
+        }
+      );
+
+      // 更好的方案 --- 承诺（规范好了所有的代码编写逻辑）
+      function requestData2() {
+        return "承诺";
+      }
+
+      const chengnuo = requestData2()
+    </script>
+  </body>
 </html>
