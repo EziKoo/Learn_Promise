@@ -26,6 +26,8 @@ class MyPromise {
   // 2、构造方法(执行器函数)
   constructor (executor) {
     try {
+      this.PromiseState = PENDING
+      this.PromiseResult = null
       // 如果执行器函数中抛了异常，throw，直接执行reject函数
       executor(this.resolve, this.reject)
     } catch (error) {
