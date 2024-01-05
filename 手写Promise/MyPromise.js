@@ -127,7 +127,7 @@ class MyPromise {
           resolve(result)
         }
       }
-      array.forEach((item, index) => {
+      arr.forEach((item, index) => {
         if(item instanceof MyPromise) {
           item.then(val => addData(index, val) ,reject)
         } else {
