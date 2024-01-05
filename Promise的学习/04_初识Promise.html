@@ -24,10 +24,10 @@
       3、每一个Promise实例对象都有3种状态，分别为：初始化：pending、成功：fulfilled、失败：rejected
       4、每一个Promise实例在刚被new出来的那一刻，状态都是初始化(pending)
       5、executor函数会接收到两个参数，它们都是函数，分别用形参：resolve、reject接收
-         (1)、调用resolve函数，
+        (1)、调用resolve函数，
                 会让Promise实例状态变为：成功(fulfilled)，
                 同时可以指定成功的value
-         (2)、调用reject函数，
+        (2)、调用reject函数，
                 会让Promise实例状态变为：失败(rejected)，
                 同时可以指定失败的reason
      */
